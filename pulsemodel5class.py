@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Sun Apr 19 19:23:36 2020
+
+@author: Akash
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Wed Apr 18 19:39:21 2020
 
 @author: Akash
@@ -8,23 +15,21 @@ import pandas as pd
 import numpy as np
 from imblearn.over_sampling import SMOTE
 import matplotlib.pyplot as plt
+from sklearn.metrics import f1_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import jaccard_score
+from sklearn.feature_selection import SelectKBest, chi2
+
 plt.rcParams['axes.grid'] = True
 
 # Read the dataset as a dataframe
-df = pd.read_excel('HRV.xlsx')
-
-# Convert the classes into 'B','C','M'
-bcm = df.iloc[:,0]
+df = pd.read_excel('pulse.xlsx')
 
 # Seperate the patient ID from dataframe
 df = df.iloc[:,1:]
 
 # Fill all the NaN values
-df['STD_NN'] = df['STD_NN'].fillna(df['STD_NN'].mean())
-
-# Rename the classes
-for i in range(187):
-    df.iloc[i,-1] = bcm[i][0]
+df['PHR'] = df['PHR'].fillna(df['PHR'].mean())
 
 # Split the classes from the dataset and assign it to a variable
 X = df.iloc[:,:-1]
@@ -34,8 +39,8 @@ plt.figure()
 plt.grid(axis='both')
 
 # Features in the dataset
-col = ['meanNN', 'STD_NN', 'HR', 'Lfnu', 'Hfnu', 'LF/HF', 'APEN', 'CD', 'PTT',
-       'PTT_SD']
+col = ['PR', 'PP', 'PT1', 'PT2', 'PT3', 'PDID', 'PHR', 'SVA', 'STRESS',
+       'RATIO', 'Unnamed: 11']
 
 # Synthetic Minority oversampling technique to balance the dataset
 oversample = SMOTE()
@@ -71,8 +76,12 @@ for i in range(len(yt)):
         count+=1
 eff = count/len(yt)
 print('Efficiency: {}'.format(eff))
+print('F1 score: {}'.format(f1_score(yt, y_pred, average='macro')))
+print('Precision score: {}'.format(precision_score(yt, y_pred, average='macro')))
+print('Jaccard score: {}'.format(jaccard_score(yt, y_pred, average=None)))
 
 # Plot the efficiency data onto a graph
+plt.title('pulse model 5 class')
 plt.plot(y_pred)
 plt.plot(yt)
 plt.show()
