@@ -13,6 +13,7 @@ from sklearn.metrics import precision_score
 from sklearn.metrics import jaccard_score
 from sklearn.feature_selection import SelectKBest, chi2
 
+
 plt.rcParams['axes.grid'] = True
 
 # Read the dataset as a dataframe
@@ -69,9 +70,14 @@ X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
 
 # Develop a SVM classifier model to train the data Use onevsone or onevsrest model
-from sklearn.svm import SVC
-classifier = SVC(kernel='rbf',gamma='auto',probability=True,decision_function_shape='ovo',verbose=True)
-classifier.fit(X_train, y_train)
+#from sklearn.svm import SVC
+#classifier = SVC(kernel='rbf',gamma='auto',probability=True,decision_function_shape='ovo',verbose=True)
+#classifier.fit(X_train, y_train)
+
+# Develop a xgboost classifier
+import xgboost
+classifier = xgboost.XGBClassifier()
+classifier.fit(X_train,y_train)
 
 # Predicting the Test set results
 y_pred = classifier.predict(X_test)
